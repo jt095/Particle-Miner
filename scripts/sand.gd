@@ -1,20 +1,21 @@
 extends RigidBody2D
 
 var sand_size = 4 #area in pixels
-var settled = false
-var move_force = 10
+var on_conveyor = false
+var move_force = 50
+var conveyor_direction: int = 1 # direction dictated by conveyor
 
 func _ready():
-	# Create the ground (visual representation)	
+	# Create the ground (visual representation)		
+	self.add_to_group("Sand")	
 	self.gravity_scale = 1
-	self.physics_material_override.friction = 1
-	self.physics_material_override.bounce = 0.1
-	self.physics_material_override.absorbent = true
-	self.physics_material_override.rough = true
+	self.physics_material_override.friction = 0.5
+	self.physics_material_override.bounce = 0	
+	self.lock_rotation = false
 	self.mass = .1
 	self.contact_monitor = true
-	self.max_contacts_reported = 4
-	
+	self.max_contacts_reported = 4	
+	self.continuous_cd = RigidBody2D.CCD_MODE_CAST_SHAPE
 	
 	var points = [
 		Vector2(-(sand_size/2), -(sand_size/2)),
@@ -24,17 +25,27 @@ func _ready():
 	]
 	$Polygon2D.polygon = points
 	$Polygon2D.color = Color("YELLOW")  # white		
-	# Create the collision shape for the ground	
-	$CollisionShape2D.shape.size = Vector2(sand_size, sand_size)  # Use the same points as the visual polygon	
-
-func _integrate_forces(state) -> void:
+	# Create the collision shape
+	$CollisionShape2D.shape = RectangleShape2D.new()
+	$CollisionShape2D.shape.extents = Vector2(sand_size/2, sand_size/2)	
+	
+func _integrate_forces(_state) -> void:
 	# This method is called every physics frame to apply custom physics forces
 	for collider in get_colliding_bodies():		
-		if collider is StaticBody2D:
-			print("here")
-			apply_push_force() # Apply force when touching StaticBody2D
+		if collider.is_in_group("Conveyor"):						
+			on_conveyor = true
+			apply_push_force(collider.direction) # Apply force when touching StaticBody2D
+			conveyor_direction = collider.direction
+		elif collider.is_in_group("Sand") and collider.on_conveyor and linear_velocity.y <= 0.5:					
+			on_conveyor = true
+			apply_push_force(collider.conveyor_direction)
+		elif collider.is_in_group("Ground"):
+			on_conveyor = false
+			constant_force = Vector2(0, 0)
+		else:
+			on_conveyor = false
+			constant_force = Vector2(0, 0)
 			
-func apply_push_force():
-	# Apply a force to move the RigidBody2D when touching the StaticBody2D
-	var force = Vector2(move_force, 0) # Force in the x direction (horizontal)
-	apply_impulse(force, Vector2.ZERO)  # Apply the impulse at the center of mass
+func apply_push_force(direction: int):
+	# Apply a linear velocity
+	linear_velocity = Vector2(direction * move_force, linear_velocity.y)

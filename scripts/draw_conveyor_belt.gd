@@ -6,6 +6,7 @@ var end_position = Vector2()
 var is_drawing = false  # Flag to track if we're currently drawing
 var block_preview: ColorRect = null  # A ColorRect to show the drawing preview
 var block_height = 15 # hard code the height
+var conveyor_belt_scene = preload("res://scenes/conveyor_belt.tscn")
 
 func _ready():
 	# Initialize the block preview ColorRect
@@ -40,32 +41,17 @@ func _process(_delta):
 											  min(start_position.y, start_position.y + block_height))
 
 # Function to create the block when mouse is released
-func create_block():
-	var block_width = end_position.x - start_position.x	
+func create_block():	
+	var block_width = abs(end_position.x - start_position.x)	
 	# Create a StaticBody2D for the block
-	var block = StaticBody2D.new()		
-	
-	# Create a collision shape for the block
-	var collision_shape = CollisionShape2D.new()
-	var rect_shape = RectangleShape2D.new()
-	rect_shape.extents = Vector2(abs(block_width) / 2, abs(block_height) / 2)  # Half-width and height extended from the middle
-	collision_shape.shape = rect_shape	
-	block.add_child(collision_shape)  # Add the collision shape to the block
-	
-	
+	var block = conveyor_belt_scene.instantiate()
+	block.width = block_width
+	block.height = block_height	
+	if end_position.x < start_position.x:
+		block.direction = -1
+	else:
+		block.direction = 1
 	# Set the position of the block
-	block.position = start_position + Vector2(abs(block_width) / 2, abs(block_height) / 2)	
+	block.position = start_position + Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2)	
 	# Add the block to the scene
 	add_child(block)
-	
-	# Create the color for the block
-	var polygon = Polygon2D.new()
-	var points = [
-		start_position,
-		Vector2(start_position.x + block_width, start_position.y),
-		Vector2(start_position.x + block_width, start_position.y + block_height),
-		Vector2(start_position.x, start_position.y + block_height)
-	]
-	polygon.polygon = points
-	polygon.color = Color(1,1,1)  # white
-	add_child(polygon)

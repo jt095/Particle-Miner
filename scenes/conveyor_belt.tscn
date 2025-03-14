@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://1fdhr2jbqnp4"]
+
+[ext_resource type="Script" uid="uid://ckxuw3b10xhey" path="res://scripts/conveyor_belt.gd" id="1_65uwv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fy46w"]
+
+[node name="ConveyorBelt" type="StaticBody2D"]
+script = ExtResource("1_65uwv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fy46w")
+one_way_collision = true
+one_way_collision_margin = 10.0
+
+[node name="Polygon2D" type="Polygon2D" parent="."]

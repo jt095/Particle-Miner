@@ -5,7 +5,7 @@ extends Node2D
 var sand_scene = preload("res://scenes/sand.tscn")
 
 # Number of grains to spawn
-var num_grains = 100
+var num_grains = 500
 
 func _ready():
 	# Create grains of sand at random positions

@@ -1,0 +1,21 @@
+extends StaticBody2D
+
+@export var width: float = 1
+@export var height: float = 1
+@export var direction: int = 1
+
+func _ready():
+	add_to_group("Conveyor")
+	# Create a collision shape for the block	
+	$CollisionShape2D.shape = RectangleShape2D.new()
+	$CollisionShape2D.shape.extents = Vector2(width / 2, abs(height) / 2)  # Half-width and height extended from the middle		
+	
+	# Create the color for the block	
+	var points = [
+		Vector2(-width / 2, -height / 2),
+		Vector2(-width / 2,  height / 2),
+		Vector2( width / 2,  height / 2),
+		Vector2( width / 2, -height / 2)
+	]
+	$Polygon2D.polygon = points
+	$Polygon2D.color = Color(1,1,1)  # white	
