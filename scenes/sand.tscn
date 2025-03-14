@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckrxlc37coneu"]
+
+[ext_resource type="Script" uid="uid://b0l2gb57wtyw6" path="res://scripts/sand.gd" id="1_xjhim"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_45ttf"]
+size = Vector2(4, 4)
+
+[node name="Sand" type="RigidBody2D"]
+script = ExtResource("1_xjhim")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_45ttf")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
