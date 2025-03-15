@@ -1,7 +1,6 @@
 extends Node2D
 
 # Preload the sand system scene
-var sand_system_scene = preload("res://scenes/sand_system.tscn")
 var rock_scene = preload("res://scenes/rock.tscn")
 # Preload the BlockDrawer scene
 var conveyor_belt_drawer_scene = preload("res://scenes/draw_conveyor_belt.tscn")
@@ -9,29 +8,33 @@ var conveyor_belt_drawer_instance: Node2D = null  # The instance of the BlockDra
 var drawing_conveyor = false
 
 func _ready():
-	create_ground()	
-	create_rock()
-	var sand_system = sand_system_scene.instantiate()
-	add_child(sand_system)		
+	create_ground([
+		Vector2(0, 1030),
+		Vector2(0, 1080),
+		Vector2(200, 1080),
+		Vector2(200, 1030)
+	])	
+	
+	create_ground([
+		Vector2(500, 1030),
+		Vector2(500, 1080),
+		Vector2(1920, 1080),
+		Vector2(1920, 1030)
+	])	
+	create_rock()	
 	
 func create_rock():
 	var rock = rock_scene.instantiate()
 	rock.position = Vector2(100, 1000)
 	add_child(rock)
 
-func create_ground():
+func create_ground(points: Array):
 	# Create the ground (visual representation)
 	var body = StaticBody2D.new()	
 	add_child(body)
-	var polygon = Polygon2D.new()
-	var points = [
-		Vector2(0, 1030),
-		Vector2(0, 1080),
-		Vector2(1920, 1080),
-		Vector2(1920, 1030)
-	]
+	var polygon = Polygon2D.new()	
 	polygon.polygon = points
-	polygon.color = Color(0,0,0,)  # white
+	polygon.color = Color(1,1,1)  # white
 	body.add_child(polygon)
 	
 	# Create the collision shape for the ground
