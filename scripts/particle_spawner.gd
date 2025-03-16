@@ -4,10 +4,10 @@ extends Node2D
 # Preload the grain scene (to save time)
 var sand_scene = preload("res://scenes/sand.tscn")
 
-@export var max_num_grains: int = 10
+@export var max_num_grains: int = 100
 @export var direction: Vector2 = Vector2(1,1)
-var min_force_strength: float = 5000.0  # The strength of the force
-var max_force_strength: float = 6000.0  # The strength of the force
+var min_force_strength: float = 500.0  # The strength of the force
+var max_force_strength: float = 600.0  # The strength of the force
 var min_angle: float = -80.0
 var max_angle: float = -70.0
 

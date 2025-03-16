@@ -1,17 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://ckrxlc37coneu"]
+[gd_scene load_steps=3 format=3 uid="uid://ckrxlc37coneu"]
 
 [ext_resource type="Script" uid="uid://b0l2gb57wtyw6" path="res://scripts/sand.gd" id="1_xjhim"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_xjhim"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xjhim"]
-size = Vector2(4, 4)
+rough = true
+absorbent = true
 
 [node name="Sand" type="RigidBody2D"]
 physics_material_override = SubResource("PhysicsMaterial_xjhim")
+linear_damp = 0.9
 script = ExtResource("1_xjhim")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_xjhim")
-
 [node name="Polygon2D" type="Polygon2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]

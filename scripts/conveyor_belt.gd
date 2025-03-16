@@ -3,9 +3,11 @@ extends StaticBody2D
 @export var width: float = 1
 @export var height: float = 1
 @export var direction: int = 1
+var friction = 1.0
 
 func _ready():
 	add_to_group("Conveyor")
+	self.friction = friction
 	# Create a collision shape for the block	
 	$CollisionShape2D.shape = RectangleShape2D.new()
 	$CollisionShape2D.shape.extents = Vector2(width / 2, abs(height) / 2)  # Half-width and height extended from the middle		
