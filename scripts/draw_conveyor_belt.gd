@@ -5,8 +5,9 @@ var start_position = Vector2()
 var end_position = Vector2()
 var is_drawing = false  # Flag to track if we're currently drawing
 var block_preview: ColorRect = null  # A ColorRect to show the drawing preview
-var block_height = 15 # hard code the height
+var block_height = 16 # hard code the height
 var conveyor_belt_scene = preload("res://scenes/conveyor_belt.tscn")
+var grid_size = GlobalVars.grid_size
 
 func _ready():
 	# Initialize the block preview ColorRect
@@ -52,6 +53,6 @@ func create_block():
 	else:
 		block.direction = 1
 	# Set the position of the block
-	block.position = start_position + Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2)	
+	block.position = snapped(start_position, Vector2(grid_size, grid_size)) + snapped(Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2), Vector2(grid_size, grid_size))
 	# Add the block to the scene
 	add_child(block)

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxmpjfk6tytlp"]
+
+[ext_resource type="Script" uid="uid://6y815mqpe68b" path="res://scripts/pile.gd" id="1_k74nx"]
+
+[node name="Pile" type="RigidBody2D"]
+script = ExtResource("1_k74nx")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]

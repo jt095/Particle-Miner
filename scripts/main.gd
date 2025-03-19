@@ -8,20 +8,25 @@ var conveyor_belt_drawer_instance: Node2D = null  # The instance of the BlockDra
 var drawing_conveyor = false
 
 func _ready():
+	#var sand_scene = get_tree().root.get_node("sand_scene")
+	#sand_scene.connect("add_scene_to_main", _on_add_scene_to_main)
 	create_ground([
-		Vector2(0, 1030),
+		Vector2(0, 1028),
 		Vector2(0, 1080),
-		Vector2(200, 1080),
-		Vector2(200, 1030)
+		Vector2(400, 1080),
+		Vector2(400, 1028)
 	])	
 	
 	create_ground([
-		Vector2(500, 1030),
+		Vector2(500, 1028),
 		Vector2(500, 1080),
 		Vector2(1920, 1080),
-		Vector2(1920, 1030)
+		Vector2(1920, 1028)
 	])	
 	create_rock()	
+	
+#func _on_add_scene_to_main():
+	#print("adding pile")
 	
 func create_rock():
 	var rock = rock_scene.instantiate()
@@ -39,7 +44,7 @@ func create_ground(points: Array):
 	
 	# Create the collision shape for the ground
 	var collision = CollisionPolygon2D.new()
-	collision.polygon = points  # Use the same points as the visual polygon
+	collision.polygon = points  # Use the same points as the visual polygon	
 	body.add_to_group("Ground")
 	body.add_child(collision)
 
