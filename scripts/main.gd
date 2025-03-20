@@ -9,7 +9,7 @@ var drawing_conveyor = false
 
 func _ready():
 	#var sand_scene = get_tree().root.get_node("sand_scene")
-	#sand_scene.connect("add_scene_to_main", _on_add_scene_to_main)
+	#sand_scene.connect("add_scene_to_main", _on_add_scene_to_main)	
 	create_ground([
 		Vector2(0, 1028),
 		Vector2(0, 1080),
