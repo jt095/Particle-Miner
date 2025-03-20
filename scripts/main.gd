@@ -11,17 +11,17 @@ func _ready():
 	#var sand_scene = get_tree().root.get_node("sand_scene")
 	#sand_scene.connect("add_scene_to_main", _on_add_scene_to_main)	
 	create_ground([
-		Vector2(0, 1028),
+		Vector2(0, 1030),
 		Vector2(0, 1080),
 		Vector2(400, 1080),
-		Vector2(400, 1028)
+		Vector2(400, 1030)
 	])	
 	
 	create_ground([
-		Vector2(500, 1028),
+		Vector2(500, 1030),
 		Vector2(500, 1080),
 		Vector2(1920, 1080),
-		Vector2(1920, 1028)
+		Vector2(1920, 1030)
 	])	
 	create_rock()	
 	
@@ -37,6 +37,7 @@ func create_ground(points: Array):
 	# Create the ground (visual representation)
 	var body = StaticBody2D.new()	
 	add_child(body)
+	body.set_collision_mask_value(2, true)
 	var polygon = Polygon2D.new()	
 	polygon.polygon = points
 	polygon.color = Color(1,1,1)  # white

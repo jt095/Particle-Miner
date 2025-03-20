@@ -30,10 +30,6 @@ window/stretch/mode="canvas_items"
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
 
-[physics]
-
-common/physics_ticks_per_second=120
-
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

@@ -2,8 +2,8 @@ extends StaticBody2D
 
 @export var width: float = 1
 @export var height: float = 1
-@export var direction: int = 1
-@export var conveyor_speed: float = 2000
+@export var conveyor_direction: int = 1
+@export var conveyor_speed: float = 100
 var friction = 1.0
 
 func _ready():

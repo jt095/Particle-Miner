@@ -1,5 +1,7 @@
 extends Node2D
 
+@onready var tilemap: TileMapLayer = get_parent().get_child(0)
+
 # Variables to store the start and end positions of the block
 var start_position = Vector2()
 var end_position = Vector2()
@@ -49,10 +51,18 @@ func create_block():
 	block.width = block_width
 	block.height = block_height	
 	if end_position.x < start_position.x:
-		block.direction = -1
+		block.conveyor_direction = -1
 	else:
-		block.direction = 1
+		block.conveyor_direction = 1
 	# Set the position of the block
-	block.position = snapped(start_position, Vector2(grid_size, grid_size)) + snapped(Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2), Vector2(grid_size, grid_size))
+	block.position = snap_to_tilemap(start_position) + snapped(Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2), Vector2(grid_size, grid_size))
 	# Add the block to the scene
 	add_child(block)
+	
+func snap_to_tilemap(pos: Vector2) -> Vector2:
+	# Convert the current position to the closest grid cell in TileMap coordinates
+	var map_position = tilemap.local_to_map(pos)	
+	# Convert back to world position
+	var snapped_position = tilemap.map_to_local(map_position)
+	# Snap the square's position to the grid in the world
+	return snapped_position
