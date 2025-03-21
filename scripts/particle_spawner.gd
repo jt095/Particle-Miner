@@ -10,7 +10,8 @@ var ore_scene = preload("res://scenes/ore.tscn")
 var ore_pool = []
 var active_ores = []
 
-@export var max_num_ores: int = 10
+#init vars from rock
+@export var particles_per_spawn: int = 1
 # spawn vars
 var min_angle: float = -80.0
 var max_angle: float = -79
@@ -19,9 +20,9 @@ var launch_speed_max: float = 590.0
 
 func _ready():
 	# Create grains of sand with random velocities
-	for i in range(randi_range(1,max_num_ores)):
+	for i in range(randi_range(1,particles_per_spawn)):
 		var ore = get_ore_from_pool()
-		ore.velocity = launch()
+		ore.velocity = launch()		
 		add_child(ore)  # Add the grain to the scene so it appears		
 		
 func get_ore_from_pool() -> CharacterBody2D:

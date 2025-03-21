@@ -1,7 +1,6 @@
 extends Area2D
 
 var particle_system_scene = preload("res://scenes/particle_spawner.tscn")
-
 func _ready():
 	z_index = 10
 	

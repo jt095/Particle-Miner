@@ -3,26 +3,34 @@
 [ext_resource type="Script" uid="uid://f4s1hbwvofx4" path="res://scenes/ore.gd" id="1_84iim"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bj4v0"]
-size = Vector2(3, 4)
+size = Vector2(2, 4)
 
 [node name="ore" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_84iim")
 
+[node name="Polygon2D2" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(0, 0, 4, 0, 4, 4, 0, 4)
+
 [node name="Polygon2D" type="Polygon2D" parent="."]
-position = Vector2(4, 2)
-scale = Vector2(2, 1)
-polygon = PackedVector2Array(-2, -2, 0, -2, 0, 2, -2, 2)
+position = Vector2(1, 1)
+color = Color(0.87451, 0.756863, 0, 1)
+polygon = PackedVector2Array(0, 0, 2, 0, 2, 2, 0, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(2, 2)
 shape = SubResource("RectangleShape2D_bj4v0")
-disabled = true
+one_way_collision_margin = 4.0
 
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
-autostart = true
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(2, 2)
+target_position = Vector2(0, 4)
+collision_mask = 5
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
