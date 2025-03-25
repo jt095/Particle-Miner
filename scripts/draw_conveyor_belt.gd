@@ -2,20 +2,26 @@ extends Node2D
 
 @onready var tilemap: TileMapLayer = get_parent().get_child(0)
 
+const BUILD_GRID_SIZE = GlobalVars.build_grid_size
+
 # Variables to store the start and end positions of the block
 var start_position = Vector2()
 var end_position = Vector2()
 var is_drawing = false  # Flag to track if we're currently drawing
 var block_preview: ColorRect = null  # A ColorRect to show the drawing preview
-var block_height = 16 # hard code the height
 var conveyor_belt_scene = preload("res://scenes/conveyor_belt.tscn")
+var block_cursor_scene = preload("res://scenes/block_cursor.tscn")
 var grid_size = GlobalVars.grid_size
+var end_block_width: int
+var end_block_position: Vector2
 
 func _ready():
 	# Initialize the block preview ColorRect
 	block_preview = ColorRect.new()
 	add_child(block_preview)
-	block_preview.color = Color(1, 1, 1, 0.5)  # Semi-transparent red for the preview
+	block_preview.color = Color(0.0, 0.969, 0.765, 0.8)
+	var block_cursor_scene_instance = block_cursor_scene.instantiate()
+	add_child(block_cursor_scene_instance)
 
 func _input(event):
 	# Handle mouse button input
@@ -23,46 +29,38 @@ func _input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				# Start drawing when the mouse is pressed				
-				start_position = event.position
+				start_position = snapped(Vector2(event.position.x - BUILD_GRID_SIZE / 2, event.position.y - BUILD_GRID_SIZE / 2), Vector2(BUILD_GRID_SIZE, BUILD_GRID_SIZE))
 				is_drawing = true
 				block_preview.position = start_position
 				block_preview.size = Vector2(0,0) # Reset size
 			else:
 				# Stop drawing when the mouse is released
-				end_position = event.position				
+				end_position = snapped(Vector2(event.position.x - BUILD_GRID_SIZE / 2, event.position.y - BUILD_GRID_SIZE / 2), Vector2(BUILD_GRID_SIZE, BUILD_GRID_SIZE))
 				is_drawing = false
 				create_block()  # Finalize the block creation
 				block_preview.size = Vector2(0, 0)  # Reset the preview size
 
 func _process(_delta):
 	if is_drawing:
-		var width = get_global_mouse_position().x - start_position.x
-		var height = block_height
-		block_preview.size = Vector2(abs(width), abs(height))  # Update the preview size
+		end_block_width = snapped(get_global_mouse_position().x - start_position.x, BUILD_GRID_SIZE)
+		var height = BUILD_GRID_SIZE
+		block_preview.size = Vector2(abs(end_block_width), abs(height))  # Update the preview size
 		# Adjust position so the preview starts from the correct point
-		block_preview.position = Vector2(min(start_position.x, get_global_mouse_position().x),
-											  min(start_position.y, start_position.y + block_height))
-
+		block_preview.position = snapped(Vector2(min(start_position.x, get_global_mouse_position().x), start_position.y), Vector2(BUILD_GRID_SIZE, BUILD_GRID_SIZE))
+		end_block_position = block_preview.position			
+		print(end_block_position)								
+											
 # Function to create the block when mouse is released
-func create_block():	
-	var block_width = abs(end_position.x - start_position.x)	
+func create_block():		
 	# Create a StaticBody2D for the block
 	var block = conveyor_belt_scene.instantiate()
-	block.width = block_width
-	block.height = block_height	
+	block.width = end_block_width
+	block.height = BUILD_GRID_SIZE
 	if end_position.x < start_position.x:
 		block.conveyor_direction = -1
 	else:
 		block.conveyor_direction = 1
 	# Set the position of the block
-	block.position = snap_to_tilemap(start_position) + snapped(Vector2(sign(end_position.x - start_position.x)*block_width/2, abs(block_height) / 2), Vector2(grid_size, grid_size))
+	block.position = Vector2(end_block_position.x + end_block_width / 2, end_block_position.y + BUILD_GRID_SIZE / 2)
 	# Add the block to the scene
 	add_child(block)
-	
-func snap_to_tilemap(pos: Vector2) -> Vector2:
-	# Convert the current position to the closest grid cell in TileMap coordinates
-	var map_position = tilemap.local_to_map(pos)	
-	# Convert back to world position
-	var snapped_position = tilemap.map_to_local(map_position)
-	# Snap the square's position to the grid in the world
-	return snapped_position

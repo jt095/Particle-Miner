@@ -11,7 +11,7 @@ var ore_pool = []
 var active_ores = []
 
 #init vars from rock
-@export var particles_per_spawn: int = 1
+@export var particles_per_spawn: int = 5
 # spawn vars
 var min_angle: float = -80.0
 var max_angle: float = -79

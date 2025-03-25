@@ -62,7 +62,7 @@ func _input(event):
 		
 
 func start_block_drawing():
-	# If there is no active block drawing instance, create and add it	
+	# If there is no active block drawing instance, create and add it		
 	if conveyor_belt_drawer_instance == null:
 		conveyor_belt_drawer_instance = conveyor_belt_drawer_scene.instantiate()
 		print("new instnace")

@@ -8,6 +8,8 @@ var is_falling: bool = true
 var on_ground: bool = false
 var on_conveyor: bool = false
 var is_snapped: bool = false
+# flag to track collision after motion
+var collided: bool = false
 var search_width_initial = 2
 var search_height_initial = 2
 var search_increase_limit = 4
@@ -37,55 +39,47 @@ func _physics_process(delta):
 		set_collision_layer(ground_layer)
 		set_collision_mask(ground_mask)
 		is_in_flight = false  # The square is no longer in flight	
-	
-	if on_conveyor:
-		velocity.x = 50
-		print(velocity)
 		
-	if is_falling:		
-		velocity.y += GRAVITY * delta		
-		# Snap to grid after moving	
-		
-	if velocity.length() == 0:		
-		snap_to_tilemap()		
-		if not is_landing():
-			is_falling = true
+	if should_fall():		
+		velocity.y += GRAVITY * delta					
 					
 	if not viewport_rect.has_point(global_position):
 		parent.return_ore_to_pool(self)
 		
-	# Move the object and handle collisions	
-	move_and_slide()
-	var collision = get_last_slide_collision()
-	if collision:
-		if not is_snapped:
-			snap_to_tilemap()			
-			is_snapped = true		
-		handle_collision(collision.get_collider())
+	# Move the object and handle collisions		
+	if not collided:
+		var collision = move_and_collide(velocity * delta)
+		if collision:		
+			collided = true			
+			if not is_snapped:
+				snap_to_tilemap()			
+				is_snapped = true		
+			handle_collision(collision.get_collider())
+	# initial collision, check for empty below
+	else:
+		is_snapped = false
+		if on_conveyor:
+			velocity.x = 25
+			move_and_slide()
+		if should_fall():		
+			if $CollidedTimer.is_stopped():
+				$CollidedTimer.start()	
+			move_and_slide()		
+			
+	# Snap to grid after moving	
+	if velocity.length() == 0:		
+		snap_to_tilemap()		
 
 func handle_collision(collider: Object):
 	
-	if collider.is_in_group("Ground"):	
-		stop()
-		is_falling = false
+	if collider.is_in_group("Ground"):			
+		stop()				
 		on_ground = true
-	if collider.is_in_group("Ore"):
+	if collider.is_in_group("Ore"):		
 		if on_ground or on_conveyor:
 			return				
-			
-		on_ground = collider.on_ground
 		on_conveyor = collider.on_conveyor
-
-		if collider.position.x == position.x:							
-			is_falling = false			
-		else:
-			is_falling = true
-			on_ground = false			
-						
-	if collider.is_in_group("Conveyor"):
-		on_conveyor = true
-		is_falling = false		
-		on_ground = true					
+		on_ground = collider.on_ground
 
 func snap_to_tilemap():
 	# Convert the current position to the closest grid cell in TileMap coordinates
@@ -96,7 +90,7 @@ func snap_to_tilemap():
 	position = snapped_position		
 	
 func stop():
-	velocity = Vector2(0,0)
+	velocity = Vector2.ZERO
 
 func _on_spawn_timer_timeout():
 	$CollisionShape2D.disabled = false	
@@ -108,6 +102,27 @@ func is_landing() -> bool:
 	# Detect if the ore is about to land (colliding with the ground or another square)
 	$RayCast2D.target_position = velocity.normalized() * GRID_SIZE*6	
 	return $RayCast2D.is_colliding()	
+	
+func should_fall() -> bool:
+	# Detect if the ore is over empty space and therefore should fall
+	$EmptyBelowRayCast.target_position = Vector2(0, GRID_SIZE+1)
+	return not $EmptyBelowRayCast.is_colliding()
 
 func get_random_color():
 	return colors[randi_range(0, len(colors) - 1)]
+
+func _on_collided_timer_timeout():
+	collided = false	
+
+func _on_area_2d_body_exited(body):
+	if body.is_in_group("Conveyor"):
+		on_conveyor = false		
+
+
+func _on_area_2d_body_entered(body):
+	if body.is_in_group("Conveyor"):
+		on_conveyor = true			
+
+
+func _on_reset_conveyor_timer_timeout():
+	on_conveyor = true

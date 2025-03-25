@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://ktotxmaf5xk0"]
+
+[ext_resource type="Script" uid="uid://bfuvlpjk1egpn" path="res://scripts/block_cursor.gd" id="1_kj030"]
+
+[node name="BlockCursor" type="Node2D"]
+script = ExtResource("1_kj030")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.968627, 0.764706, 0.8)
